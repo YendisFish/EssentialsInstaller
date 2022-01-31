@@ -8,9 +8,23 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>
 async fn main() {
     println!("Starting Installer...");
     
+    let mut ifex = ifnotexists(String::from("./esin.conf")).await;
+
+    match ifex {
+        false => all_install_false().await,
+        true => all_install_true().await,
+        _=> all_install_false().await
+    }
+
+    println!("Press ENTER to exit");
+    let mut xt = String::new();
+    std::io::stdin().read_line(&mut xt);
+}
+
+async fn all_install_true() {
     let mut conf = String::new();
     std::fs::File::open("./esin.conf").unwrap().read_to_string(&mut conf);
-    
+      
     if conf.contains("dotnet") {
         dotnet_installer().await;
     }
@@ -30,10 +44,14 @@ async fn main() {
     if conf.contains("discord") {
         discord_installer().await;
     }
+}
 
-    println!("Press ENTER to exit");
-    let mut xt = String::new();
-    std::io::stdin().read_line(&mut xt);
+async fn all_install_false() {
+    dotnet_installer().await;
+    firefox_installer().await;
+    steam_installer().await;
+    vscode_installer().await;
+    discord_installer().await;
 }
 
 async fn discord_installer() {
@@ -116,4 +134,10 @@ async fn firefox_installer() {
 async fn checkexists(dir: String) -> std::io::Result<bool> {
     let metadata = std::fs::metadata(dir)?;
     return Ok(metadata.is_dir());
+}
+
+async fn ifnotexists(dir: String) -> bool{
+    let mut ret = std::path::Path::new(&dir).is_file();
+
+    return ret;
 }
