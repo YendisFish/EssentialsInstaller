@@ -25,24 +25,28 @@ async fn all_install_true() {
     let mut conf = String::new();
     std::fs::File::open("./esin.conf").unwrap().read_to_string(&mut conf);
       
-    if conf.contains("dotnet") {
+    if conf.to_lowercase().contains("dotnet") {
         dotnet_installer().await;
     }
 
-    if conf.contains("firefox") {
+    if conf.to_lowercase().contains("firefox") {
         firefox_installer().await;
     }
 
-    if conf.contains("steam") {
+    if conf.to_lowercase().contains("steam") {
         steam_installer().await;
     }
 
-    if conf.contains("vscode") {
+    if conf.to_lowercase().contains("vscode") {
         vscode_installer().await;
     }
 
-    if conf.contains("discord") {
+    if conf.to_lowercase().contains("discord") {
         discord_installer().await;
+    }
+
+    if conf.to_lowercase().contains("wsc") {
+
     }
 }
 
@@ -52,6 +56,15 @@ async fn all_install_false() {
     steam_installer().await;
     vscode_installer().await;
     discord_installer().await;
+    wsc_installer().await
+}
+
+async fn wsc_installer() {
+    println!("Installing WSC (Windows Solution Creator)...");
+
+    download(String::from("https://github.com/YendisFish/WSC/releases/download/2022-29-1/WindowsSolutionCreator.exe"), String::from("WindowsSolutionCreator.exe"), String::from(String::from("C:/Users/") + whoami::username().as_str() + "/Documents/ESIN")).await;
+
+    println!("Windows Solution Creator has been installed to {}", String::from(String::from("C:/Users/") + whoami::username().as_str() + "/Documents/ESIN/WindowsSolutionCreator.exe"));
 }
 
 async fn discord_installer() {
